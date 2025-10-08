@@ -17,9 +17,9 @@ COPY requirements.txt .
 WORKDIR /tmp/ARL-NPoC
 COPY extra/ARL-NPoC .
 
-RUN apt-get update && apt-get install gcc python3-dev -y && \
-    cd /tmp && pip install --no-cache-dir -r requirements.txt && \
-    cd /tmp/ARL-NPoC && pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir . && \
+RUN apt-get update && apt-get install gcc python3-dev -y \
+    && cd /tmp && pip install --no-cache-dir -r requirements.txt \
+    && cd /tmp/ARL-NPoC && pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir . \
     && apt-get purge --auto-remove -y \
         gcc python3-dev \
     && apt-get clean \
