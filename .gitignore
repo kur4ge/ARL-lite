@@ -1,1 +1,2 @@
 docker/.env
+docker/config/GeoLite2/*.mmdb
