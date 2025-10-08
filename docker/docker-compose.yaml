@@ -35,6 +35,8 @@ services:
   arl-web:
     build: ..
     entrypoint: gunicorn
+    environment:
+      OPENSSL_CONF: /dev/null
     volumes:
       - ./config/arl/config.yaml:/arl/app/config.yaml
       - ./config/GeoLite2:/app/GeoLite2
@@ -52,6 +54,8 @@ services:
   arl-worker:
     build: ..
     entrypoint: celery
+    environment:
+      OPENSSL_CONF: /dev/null
     volumes:
       - ./config/arl/config.yaml:/arl/app/config.yaml
       - ./config/GeoLite2:/arl/GeoLite2
@@ -60,6 +64,8 @@ services:
   arl-scheduler:
     build: ..
     entrypoint: python
+    environment:
+      OPENSSL_CONF: /dev/null
     volumes:
       - ./config/arl/config.yaml:/arl/app/config.yaml
       - ./config/GeoLite2:/arl/GeoLite2
@@ -68,6 +74,8 @@ services:
   arl-worker-github:
     build: ..
     entrypoint: celery
+    environment:
+      OPENSSL_CONF: /dev/null
     volumes:
       - ./config/arl/config.yaml:/arl/app/config.yaml
       - ./config/GeoLite2:/arl/GeoLite2
