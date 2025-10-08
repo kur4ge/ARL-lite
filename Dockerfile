@@ -1,6 +1,6 @@
 FROM python:3.9-slim AS massdns
 WORKDIR /massdns
-RUN apt-get update && apt-get install git gcc make -y && && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install git gcc make -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/blechschmidt/massdns --depth=1 .
 RUN make
 
