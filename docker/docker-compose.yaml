@@ -1,0 +1,75 @@
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "0.0.0.0:8001:80"
+    volumes:
+      - ../extra/frontend/:/usr/share/nginx/html/
+      - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  mongodb:
+    image: mongo:4.4
+    hostname: mongo
+    ports:
+      - "0.0.0.0:27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+    volumes:
+      - mongodb_data:/data/db/
+
+  rabbitmq:
+    image: rabbitmq:4.1-alpine
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - ./config/rabbitmq/init.sh:/usr/local/bin/init.sh
+    entrypoint: sh -c "chmod +x /usr/local/bin/init.sh && /usr/local/bin/init.sh & exec rabbitmq-server"
+
+  arl-web:
+    build: .
+    entrypoint: gunicorn
+    volumes:
+      - ./data/arl/config.yaml:/arl/app/config.yaml
+      - ./data/GeoLite2:/app/GeoLite2
+    command:
+      - -b
+      - 0.0.0.0:8000
+      - app.main:arl_app
+      - -w
+      - '4'
+      - --access-logfile
+      - /dev/stdout
+      - --access-logformat
+      - '%({x-real-ip}i)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
+
+  arl-worker:
+    build: .
+    entrypoint: celery
+    volumes:
+      - ./config/arl/config.yaml:/arl/app/config.yaml
+      - ./config/GeoLite2:/arl/GeoLite2
+    command: ["-A", "app.celerytask.celery", "worker", "-l", "info", "-Q", "arltask", "-n", "arltask", "-c", "5", "-O", "fair", "-f", "/dev/stdout"]
+
+  arl-scheduler:
+    build: .
+    entrypoint: python
+    volumes:
+      - ./config/arl/config.yaml:/arl/app/config.yaml
+      - ./config/GeoLite2:/arl/GeoLite2
+    command: ["-m", "app.scheduler"]
+
+  arl-worker-github:
+    build: .
+    entrypoint: celery
+    volumes:
+      - ./config/arl/config.yaml:/arl/app/config.yaml
+      - ./config/GeoLite2:/arl/GeoLite2
+    command: ["-A", "app.celerytask.celery", "worker", "-l", "info", "-Q", "arlgithub", "-n", "arlgithub", "-c", "3", "-O", "fair", "-f", "/dev/stdout"]
+
+volumes:
+  mongodb_data:
+  rabbitmq_data:
