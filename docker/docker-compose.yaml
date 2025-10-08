@@ -38,6 +38,7 @@ services:
     environment:
       OPENSSL_CONF: /dev/null
     volumes:
+      - screenshot_data:/arl/app/screenshot/
       - ./config/arl/config.yaml:/arl/app/config.yaml
       - ./config/GeoLite2:/app/GeoLite2
     command:
@@ -67,6 +68,7 @@ services:
     environment:
       OPENSSL_CONF: /dev/null
     volumes:
+      - screenshot_data:/arl/app/screenshot/  # 要和web挂一起
       - ./config/arl/config.yaml:/arl/app/config.yaml
       - ./config/GeoLite2:/arl/GeoLite2
       - ../app/dicts:/arl/app/dicts # worker 把字典挂出来
@@ -86,3 +88,4 @@ services:
 volumes:
   mongodb_data:
   rabbitmq_data:
+  screenshot_data:

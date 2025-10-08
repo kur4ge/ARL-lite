@@ -16,7 +16,7 @@ class Config(object):
         os.mkdir(TMP_PATH)
     MASSDNS_BIN = os.path.join(basedir, 'tools/massdns')
     SCREENSHOT_JS = os.path.join(basedir, 'tools/screenshot.js')
-    SCREENSHOT_DIR = os.path.join(basedir, 'tmp_screenshot')
+    SCREENSHOT_DIR = os.path.join(basedir, 'screenshot')
     SCREENSHOT_FAIL_IMG = os.path.join(basedir, 'dicts/noscreenshot.jpg')
     DRIVER_JS = os.path.join(basedir, 'tools/driver.js')
 
