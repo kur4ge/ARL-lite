@@ -15,7 +15,7 @@ services:
     ports:
       - "0.0.0.0:27017:27017"
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${TZ}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
       ARL_USER: ${ARL_USER}
@@ -28,7 +28,7 @@ services:
     image: rabbitmq:4.1-alpine
     hostname: rabbitmq
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${TZ}
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
     volumes:
@@ -40,7 +40,7 @@ services:
     build: ..
     entrypoint: gunicorn
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${TZ}
     volumes:
       - screenshot_data:/arl/app/screenshot/
       - ./config/arl/config.yaml:/arl/app/config.yaml
@@ -60,7 +60,7 @@ services:
     build: ..
     entrypoint: python
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${TZ}
     volumes:
       - ./config/arl/config.yaml:/arl/app/config.yaml
       - ./config/GeoLite2:/arl/GeoLite2
@@ -70,7 +70,7 @@ services:
     build: ..
     entrypoint: celery
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${TZ}
       OPENSSL_CONF: /dev/null # phantomjs 需要这个环境变量
     volumes:
       - screenshot_data:/arl/app/screenshot/  # 要和web挂一起
@@ -83,7 +83,7 @@ services:
     build: ..
     entrypoint: celery
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${TZ}
     volumes:
       - ./config/arl/config.yaml:/arl/app/config.yaml
       - ./config/GeoLite2:/arl/GeoLite2
