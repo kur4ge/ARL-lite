@@ -51,16 +51,6 @@ services:
       - --access-logformat
       - '%({x-real-ip}i)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
 
-  arl-worker:
-    build: ..
-    entrypoint: celery
-    environment:
-      OPENSSL_CONF: /dev/null
-    volumes:
-      - ./config/arl/config.yaml:/arl/app/config.yaml
-      - ./config/GeoLite2:/arl/GeoLite2
-    command: ["-A", "app.celerytask.celery", "worker", "-l", "info", "-Q", "arltask", "-n", "arltask", "-c", "5", "-O", "fair", "-f", "/dev/stdout"]
-
   arl-scheduler:
     build: ..
     entrypoint: python
@@ -71,6 +61,17 @@ services:
       - ./config/GeoLite2:/arl/GeoLite2
     command: ["-m", "app.scheduler"]
 
+  arl-worker:
+    build: ..
+    entrypoint: celery
+    environment:
+      OPENSSL_CONF: /dev/null
+    volumes:
+      - ./config/arl/config.yaml:/arl/app/config.yaml
+      - ./config/GeoLite2:/arl/GeoLite2
+      - ../app/dicts:/arl/app/dicts # worker 把字典挂出来
+    command: ["-A", "app.celerytask.celery", "worker", "-l", "info", "-Q", "arltask", "-n", "arltask", "-c", "5", "-O", "fair", "-f", "/dev/stdout"]
+
   arl-worker-github:
     build: ..
     entrypoint: celery
@@ -79,6 +80,7 @@ services:
     volumes:
       - ./config/arl/config.yaml:/arl/app/config.yaml
       - ./config/GeoLite2:/arl/GeoLite2
+      - ../app/dicts:/arl/app/dicts # worker 把字典挂出来
     command: ["-A", "app.celerytask.celery", "worker", "-l", "info", "-Q", "arlgithub", "-n", "arlgithub", "-c", "3", "-O", "fair", "-f", "/dev/stdout"]
 
 volumes:
