@@ -44,7 +44,7 @@ services:
     volumes:
       - screenshot_data:/arl/app/screenshot/
       - ./config/arl/config.yaml:/arl/app/config.yaml
-      - ./config/GeoLite2:/app/GeoLite2
+      - ./config/GeoLite2:/arl/GeoLite2
     command:
       - -b
       - 0.0.0.0:8000
